@@ -10,15 +10,8 @@
 
 class CTradeEx : public CTrade
 {
-private:
-   string m_comment;
-
 public:
-   CTradeEx() : CTrade() { m_comment = ""; }
-
-   void SetComment(string comment) { m_comment = comment; }
-
-   bool PositionClose(const ulong ticket, const ulong deviation = ULONG_MAX)
+   bool PositionClose(const ulong ticket, const string m_comment = "", const ulong deviation = ULONG_MAX)
    {
       //--- check stopped
       if (IsStopped(__FUNCTION__))
@@ -53,7 +46,7 @@ public:
       m_request.magic = m_magic;
       m_request.deviation = (deviation == ULONG_MAX) ? m_deviation : deviation;
 
-      // Thêm comment vào request
+      // Add comment to request
       m_request.comment = m_comment;
 
       //--- close position
@@ -192,7 +185,7 @@ double CalculateLotSize(double entryPrice, double stopLoss)
    double minLot = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_MIN);
    double lotStep = SymbolInfoDouble(_Symbol, SYMBOL_VOLUME_STEP);
 
-   lotSize = NormalizeDouble(floor(lotSize / lotStep) * lotStep, 2);
+   lotSize = NormalizeDouble(MathRound(lotSize / lotStep) * lotStep, 2);
 
    lotSize = fmax(lotSize, minLot);
 
@@ -205,9 +198,6 @@ double CalculateLotSize(double entryPrice, double stopLoss)
 void CloseOrders(ENUM_POSITION_TYPE typeToClose)
 {
    int totalPositions = PositionsTotal();
-
-   trade.SetComment(GenerateComment("Closing position"));
-
    for (int i = totalPositions - 1; i >= 0; i--)
    {
       ulong ticket = PositionGetTicket(i);
@@ -218,7 +208,8 @@ void CloseOrders(ENUM_POSITION_TYPE typeToClose)
              PositionGetInteger(POSITION_MAGIC) == MagicNumber &&
              PositionGetInteger(POSITION_TYPE) == typeToClose)
          {
-            if (!trade.PositionClose(ticket))
+            if (!trade.PositionClose(ticket,
+                                     GenerateComment("Close Order")))
                Print(GenerateComment("Failed to close "),
                      (typeToClose == POSITION_TYPE_BUY ? "BUY" : "SELL"),
                      " position with ticket: ", ticket,
