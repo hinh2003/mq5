@@ -74,12 +74,8 @@ struct TradingSignals
 input double lotThreshold = 0;                       // Maximum lot size, 0 has no effect
 input long MagicNumber = 123456;                     // Magic number for the EA
 input double riskMoney = 1000;                       // Risk Money
-input int InpDonchianPeriodHTF = 20;                    // Donchian HTF Period
-input int InpDonchianPeriodLTF = 20;                    // Donchian LTF Period
 input bool AcceptBuy = true;                         // Enable Buy Orders
 input bool AcceptSell = false;                       // Enable Sell Orders
-input ENUM_TIMEFRAMES SelectedTimeframeHtf = PERIOD_D1; // Selected Timeframe for HTF
-input ENUM_TIMEFRAMES SelectedTimeframeLtf = PERIOD_H1; // Selected Timeframe for LTF
 input ENUM_TIMEFRAMES SelectedTimeframe = PERIOD_H1; // Selected Timeframe for the EA
 input OrderEntryMode OrderEntryOption = ENTRY_ATO;   // Choose entry mode
 datetime lastBarTime = iTime(_Symbol, SelectedTimeframe, 0);
